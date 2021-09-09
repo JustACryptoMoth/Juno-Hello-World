@@ -29,8 +29,15 @@ User Actions:
 - Upvote poll
   - JavaScript Side:
     - Each poll has an up arrow and down arrow next to the poll on the left (similar to StackOverflow)
-    - The user can upvote or downvote 
+    - The user can upvote or downvote a poll. This represents the "popularity" of the poll.
+    - Either above or inside of the arrows should be the "total poll score", which is upvotes minus downvotes.
+    - The upvote or downvote button will show as highlighted if the user has already voted on the poll
+    - If a user clicks either the upvote or downvote buttons, it will signal a transaction to the smart contract.
+    - If the user has already upvoted or downvoted a poll, the only new upvote or downvote that differs from previous upvote or downvote is accepted.
+    - The user will be prompted with the Keplr prompt to sign the transaction of upvote or downvote.
+    - Once the transaction goes through asynchronously, the poll value will update to the new poll's value
   - Smart Contract side: 
+    - When the user submits the transaction on a poll, 
 
 - Create simple poll
   - JavaScript Side:
@@ -151,6 +158,21 @@ fn get_poll_answer_choices(_poll_id: u64) -> Vector<String>
 // Returns the amount of votes of each (string) answer for a given poll
 fn get_poll_voted_answers(_poll_id: u64) -> HashMap<String, u32>
 
+////////////////////////////////////
+// Methods that modify poll data: //
+////////////////////////////////////
+
+// User (self) upvotes the poll. Increments the QuestionUpvotes value within the poll.
+// Result is error if unsuccessful, or value of new upvotes if successful.
+fn upvote_poll(_poll_id: u64) -> Result
+
+// User (self) downvotes the poll. Increments the QuestionDownvotes value within the poll.
+// Result is error if unsuccessful, or value of new downvotes if successful.
+fn downvote_poll(_poll_id: u64) -> Result
+
+// Returns the poll type (Simple = always asks Yes / No / No with Veto / Abstain with 1 choice each. 
+// Multi allows custom responses with multiple possible responses.)
+fn get_poll_type(_poll_id: u64) -> String
 
 //////////////////////////////////////////////////////////////
 // Methods that return addresses of poll creators & voters: //
